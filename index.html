@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to React</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+
+<style>
+  :root {
+    --amber:  #f5a623;
+    --green:  #4ecb8d;
+    --purple: #a78bfa;
+    --blue:   #60a5fa;
+    --red:    #f87171;
+    --bg:     #0a0a0f;
+    --bg2:    #10101a;
+    --bg3:    #181824;
+    --border: #2a2a3a;
+    --text:   #e8e8f0;
+    --muted:  #8888a8;
+  }
+
+  .reveal-viewport { background: var(--bg); }
+  .reveal .slides section { background: transparent; }
+
+  .reveal { font-family: 'DM Sans', sans-serif; color: var(--text); }
+  .reveal h1, .reveal h2, .reveal h3 { font-family: 'Playfair Display', serif; font-weight: 700; }
+  .reveal h1 { font-size: 1.6em; color: var(--amber); line-height: 1.1; }
+  .reveal h2 { font-size: 1.1em; color: var(--amber); margin-bottom: .2em; }
+  .reveal h3 { font-size: .78em; color: var(--green); margin-bottom: .15em; }
+  .reveal p  { font-size: .56em; line-height: 1.45; color: var(--text); }
+  .reveal li { font-size: .54em; line-height: 1.45; margin-bottom: .1em; }
+  .reveal code { font-family: 'JetBrains Mono', monospace; font-size: .72em; }
+  .reveal pre  { box-shadow: none; background: var(--bg3); border: 1px solid var(--border);
+                 border-radius: 6px; padding: .3em .5em; margin: .25em 0; }
+  .reveal pre code { font-size: .52em; line-height: 1.35; background: transparent; color: #cdd6f4; }
+
+  .slide-hdr {
+    display: flex; align-items: center; gap: .4em;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: .2em; margin-bottom: .3em;
+  }
+  .slide-hdr .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .42em; font-weight: 500;
+    color: var(--bg); background: var(--amber);
+    padding: .1em .4em; border-radius: 3px;
+    letter-spacing: .04em;
+  }
+  .slide-hdr h2 { margin: 0; font-size: .95em; }
+
+  .cols   { display: grid; gap: .5em; }
+  .cols-2 { grid-template-columns: 1fr 1fr; }
+  .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .cols-6040 { grid-template-columns: 6fr 4fr; }
+  .cols-4060 { grid-template-columns: 4fr 6fr; }
+
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 6px; padding: .35em .6em;
+  }
+  .card.amber { border-left: 3px solid var(--amber); }
+  .card.green { border-left: 3px solid var(--green); }
+  .card.purple{ border-left: 3px solid var(--purple); }
+  .card.blue  { border-left: 3px solid var(--blue); }
+  .card.red   { border-left: 3px solid var(--red); }
+  .card h3 { font-size: .64em; margin: 0 0 .12em; }
+  .card p  { font-size: .52em; margin: 0; color: #b8b8d0; }
+  .card ul { margin: 0; padding-left: 1em; }
+  .card li { font-size: .52em; color: #b8b8d0; margin-bottom: .02em; }
+
+  .reveal table { width: 100%; border-collapse: collapse; font-size: .5em; }
+  .reveal table th { background: var(--bg3); color: var(--amber); font-weight: 600;
+                     padding: .2em .4em; border: 1px solid var(--border); text-align: left; }
+  .reveal table td { padding: .18em .4em; border: 1px solid var(--border); color: #ccc; }
+  .reveal table tr:nth-child(even) td { background: #0e0e18; }
+
+  .a  { color: var(--amber); font-weight: 600; }
+  .g  { color: var(--green); font-weight: 600; }
+  .p  { color: var(--purple); font-weight: 600; }
+  .b  { color: var(--blue); font-weight: 600; }
+  .r  { color: var(--red); font-weight: 600; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  svg.diagram { display: block; margin: 0 auto; overflow: visible; }
+
+  .pill {
+    display: inline-block; font-family: 'JetBrains Mono', monospace;
+    font-size: .44em; padding: .08em .4em; border-radius: 99px;
+    border: 1px solid; margin: 0 .08em;
+  }
+  .pill.amber { color: var(--amber); border-color: var(--amber); }
+  .pill.green { color: var(--green); border-color: var(--green); }
+  .pill.purple{ color: var(--purple); border-color: var(--purple); }
+  .pill.blue  { color: var(--blue); border-color: var(--blue); }
+
+  .reveal .slide-footer { display: none; }
+  .title-slide h1 { font-size: 1.8em; }
+  .title-slide .subtitle {
+    font-size: .7em; color: var(--green); font-family: 'DM Sans', sans-serif;
+    font-weight: 300; letter-spacing: .04em; margin: .3em 0 .6em;
+  }
+  .title-slide .meta { font-size: .48em; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+  .reveal ul, .reveal ol { margin: .15em 0 .15em 1em; }
+  .reveal .slides > section { display: flex !important; flex-direction: column !important; overflow-y: auto !important; align-items: stretch !important; justify-content: flex-start !important; }
+</style>
+</head>
+<body>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================================ -->
+<!-- SLIDE 01 — Title                                              -->
+<!-- ============================================================ -->
+<section class="title-slide" data-background-color="#0a0a0f">
+  <div style="text-align:left; max-width:820px; margin:0 auto; padding: 1em 0;">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:.5em; color:var(--muted); margin-bottom:.4em; letter-spacing:.1em;">
+      TECHNICAL PRESENTATION
+    </div>
+    <h1>Introduction to<br>React</h1>
+    <div class="subtitle">Component-Based UI Development</div>
+    <div style="width:60px; height:3px; background:var(--amber); margin-bottom:1.4em;"></div>
+    <div class="meta">JSX &middot; components &middot; hooks &middot; state &middot; virtual DOM &middot; ecosystem</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 02 — Agenda                                             -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">02</span><h2>Agenda</h2></div>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>Foundations</h3>
+      <ul>
+        <li>What Is React?</li>
+        <li>The Virtual DOM</li>
+        <li>JSX &mdash; JavaScript XML</li>
+        <li>Components</li>
+        <li>Props &amp; Data Flow</li>
+      </ul>
+    </div>
+    <div class="card green">
+      <h3>Core Hooks &amp; Patterns</h3>
+      <ul>
+        <li>State &amp; useState</li>
+        <li>useEffect &amp; Side Effects</li>
+        <li>Event Handling</li>
+        <li>Conditional Rendering &amp; Lists</li>
+        <li>Forms &amp; Controlled Components</li>
+      </ul>
+    </div>
+    <div class="card purple">
+      <h3>Advanced State &amp; Logic</h3>
+      <ul>
+        <li>Context API &amp; useContext</li>
+        <li>useReducer &amp; Complex State</li>
+        <li>Custom Hooks</li>
+      </ul>
+    </div>
+    <div class="card blue">
+      <h3>Ecosystem &amp; Production</h3>
+      <ul>
+        <li>React Router</li>
+        <li>Performance Optimisation</li>
+        <li>Testing React Components</li>
+        <li>The React Ecosystem</li>
+        <li>Summary &amp; Next Steps</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 03 — What Is React?                                     -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">03</span><h2>What Is React?</h2></div>
+  <p>React is a <span class="a">declarative</span>, <span class="g">component-based</span> JavaScript library for building user interfaces. Created at Facebook by <span class="b">Jordan Walke</span> in 2011, open-sourced in <span class="a">May 2013</span>.</p>
+  <div class="cols cols-3">
+    <div class="card amber">
+      <h3>Key Properties</h3>
+      <ul>
+        <li>Declarative rendering</li>
+        <li>Component architecture</li>
+        <li>Unidirectional data flow</li>
+        <li>Virtual DOM diffing</li>
+        <li>JSX syntax extension</li>
+      </ul>
+    </div>
+    <div class="card green">
+      <h3>Timeline</h3>
+      <ul>
+        <li><span class="a">2011</span> &mdash; Internal use at Facebook</li>
+        <li><span class="a">2013</span> &mdash; Open-sourced</li>
+        <li><span class="a">2015</span> &mdash; React Native released</li>
+        <li><span class="a">2019</span> &mdash; Hooks (v16.8)</li>
+        <li><span class="a">2022</span> &mdash; React 18 (concurrent)</li>
+      </ul>
+    </div>
+    <div class="card blue">
+      <h3>Who Uses React?</h3>
+      <ul>
+        <li>Meta (Facebook, Instagram)</li>
+        <li>Netflix, Airbnb, Uber</li>
+        <li>Twitter / X, Discord</li>
+        <li>Shopify, Dropbox</li>
+        <li>Most popular UI library on npm</li>
+      </ul>
+    </div>
+  </div>
+  <p style="margin-top:.3em;">React is <span class="p">not a framework</span> &mdash; it handles only the view layer. You choose your own routing, state management, and build tools. This flexibility is both its greatest strength and source of decision fatigue.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 04 — The Virtual DOM                                    -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">04</span><h2>The Virtual DOM</h2></div>
+  <p>React maintains a lightweight <span class="a">in-memory representation</span> of the real DOM. When state changes, React builds a new virtual tree, <span class="g">diffs</span> it against the previous one, and applies only the minimal set of real DOM mutations.</p>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>Reconciliation Algorithm</h3>
+      <ul>
+        <li>Elements of <span class="b">different types</span> produce different trees &mdash; full subtree replacement</li>
+        <li>Elements of the <span class="g">same type</span> &mdash; React updates only changed attributes</li>
+        <li>Children are compared using <span class="a">keys</span> for efficient reordering</li>
+        <li>O(n) heuristic diffing instead of O(n&sup3;) tree comparison</li>
+      </ul>
+    </div>
+    <div class="card green">
+      <h3>Fiber Architecture (React 16+)</h3>
+      <ul>
+        <li>Rewrite of the reconciler as an <span class="p">incremental</span> rendering engine</li>
+        <li>Work is split into units called <span class="a">fibers</span></li>
+        <li>Supports <span class="b">priority-based scheduling</span> &mdash; urgent updates (input) interrupt lower-priority work</li>
+        <li>Enables concurrent rendering in React 18</li>
+      </ul>
+    </div>
+  </div>
+  <svg class="diagram" width="700" height="110" viewBox="0 0 700 110">
+    <rect x="0" y="20" width="140" height="50" rx="6" fill="#10101a" stroke="#f5a623"/>
+    <text x="70" y="50" text-anchor="middle" fill="#f5a623" font-size="13" font-family="JetBrains Mono">State Change</text>
+    <line x1="140" y1="45" x2="185" y2="45" stroke="#4ecb8d" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="185" y="20" width="140" height="50" rx="6" fill="#10101a" stroke="#4ecb8d"/>
+    <text x="255" y="50" text-anchor="middle" fill="#4ecb8d" font-size="13" font-family="JetBrains Mono">New vDOM Tree</text>
+    <line x1="325" y1="45" x2="370" y2="45" stroke="#a78bfa" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="370" y="20" width="140" height="50" rx="6" fill="#10101a" stroke="#a78bfa"/>
+    <text x="440" y="50" text-anchor="middle" fill="#a78bfa" font-size="13" font-family="JetBrains Mono">Diff / Reconcile</text>
+    <line x1="510" y1="45" x2="555" y2="45" stroke="#60a5fa" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="555" y="20" width="140" height="50" rx="6" fill="#10101a" stroke="#60a5fa"/>
+    <text x="625" y="50" text-anchor="middle" fill="#60a5fa" font-size="13" font-family="JetBrains Mono">Patch Real DOM</text>
+    <defs><marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8888a8"/></marker></defs>
+  </svg>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 05 — JSX — JavaScript XML                               -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">05</span><h2>JSX &mdash; JavaScript XML</h2></div>
+  <p>JSX is a <span class="a">syntax extension</span> that lets you write HTML-like markup inside JavaScript. It compiles to <code>React.createElement()</code> calls (or the new JSX transform in React 17+).</p>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>JSX Syntax</h3>
+      <pre><code class="language-jsx">// JSX expression
+const element = (
+  &lt;div className="greeting"&gt;
+    &lt;h1&gt;Hello, {user.name}!&lt;/h1&gt;
+    &lt;p&gt;You have {unread} messages.&lt;/p&gt;
+  &lt;/div&gt;
+);
+
+// Compiles to:
+const element = React.createElement(
+  'div',
+  { className: 'greeting' },
+  React.createElement('h1', null,
+    'Hello, ', user.name, '!'),
+  React.createElement('p', null,
+    'You have ', unread, ' messages.')
+);</code></pre>
+    </div>
+    <div class="card green">
+      <h3>Expressions &amp; Conditional Rendering</h3>
+      <pre><code class="language-jsx">// Embed any JS expression with { }
+const list = (
+  &lt;ul&gt;
+    {items.map(item =&gt; (
+      &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;
+    ))}
+  &lt;/ul&gt;
+);
+
+// Conditional rendering
+function Status({ isOnline }) {
+  return (
+    &lt;span&gt;
+      {isOnline ? '🟢 Online' : '⚪ Offline'}
+    &lt;/span&gt;
+  );
+}</code></pre>
+    </div>
+  </div>
+  <table style="margin-top:.2em;">
+    <tr><th>HTML</th><th>JSX Equivalent</th><th>Reason</th></tr>
+    <tr><td><code>class</code></td><td><code>className</code></td><td><code>class</code> is a reserved word in JS</td></tr>
+    <tr><td><code>for</code></td><td><code>htmlFor</code></td><td><code>for</code> is a reserved word in JS</td></tr>
+    <tr><td><code>style="color:red"</code></td><td><code>style={{'{'}color: 'red'{'}'}</code></td><td>Style accepts an object, not a string</td></tr>
+    <tr><td><code>onclick</code></td><td><code>onClick</code></td><td>camelCase event handlers</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 06 — Components                                         -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">06</span><h2>Components</h2></div>
+  <p>Components are the <span class="a">building blocks</span> of every React UI. They accept inputs (props), manage internal state, and return JSX describing what should appear on screen.</p>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>Functional Component (Modern)</h3>
+      <pre><code class="language-jsx">function UserCard({ name, role, avatar }) {
+  return (
+    &lt;div className="user-card"&gt;
+      &lt;img src={avatar} alt={name} /&gt;
+      &lt;h2&gt;{name}&lt;/h2&gt;
+      &lt;span className="role"&gt;{role}&lt;/span&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Arrow function variant
+const Badge = ({ label, color }) =&gt; (
+  &lt;span style={{ background: color }}&gt;
+    {label}
+  &lt;/span&gt;
+);</code></pre>
+    </div>
+    <div class="card green">
+      <h3>Class Component (Legacy)</h3>
+      <pre><code class="language-jsx">class UserCard extends React.Component {
+  render() {
+    const { name, role, avatar } = this.props;
+    return (
+      &lt;div className="user-card"&gt;
+        &lt;img src={avatar} alt={name} /&gt;
+        &lt;h2&gt;{name}&lt;/h2&gt;
+        &lt;span&gt;{role}&lt;/span&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+// Class components still work but
+// functional + hooks is the standard.</code></pre>
+    </div>
+  </div>
+  <div class="card purple" style="margin-top:.3em;">
+    <h3>Composition Over Inheritance</h3>
+    <p>React favours <span class="a">composition</span>: build complex UIs by nesting simple components. Use the <code>children</code> prop for generic containers and render props or hooks for shared logic. Class inheritance is almost never needed.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 07 — Props & Data Flow                                  -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">07</span><h2>Props &amp; Data Flow</h2></div>
+  <p>Props are <span class="a">read-only</span> inputs passed from parent to child. React enforces <span class="g">one-way (top-down) data flow</span>, making the application easier to reason about and debug.</p>
+  <div class="cols cols-6040">
+    <div>
+      <pre><code class="language-jsx">// Parent passes props down
+function App() {
+  return (
+    &lt;Dashboard
+      user={{ name: 'Alice', id: 42 }}
+      theme="dark"
+      onLogout={() =&gt; auth.signOut()}
+    /&gt;
+  );
+}
+
+// Child receives and uses props
+function Dashboard({ user, theme, onLogout }) {
+  return (
+    &lt;div className={`dash ${theme}`}&gt;
+      &lt;Header name={user.name} /&gt;
+      &lt;button onClick={onLogout}&gt;Log Out&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+    </div>
+    <div>
+      <div class="card amber">
+        <h3>PropTypes (Runtime Checks)</h3>
+        <pre><code class="language-jsx">import PropTypes from 'prop-types';
+
+Dashboard.propTypes = {
+  user:     PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    id:   PropTypes.number,
+  }),
+  theme:    PropTypes.oneOf(['light','dark']),
+  onLogout: PropTypes.func.isRequired,
+};</code></pre>
+      </div>
+      <div class="card green" style="margin-top:.3em;">
+        <h3>children Prop</h3>
+        <pre><code class="language-jsx">function Panel({ title, children }) {
+  return (
+    &lt;section className="panel"&gt;
+      &lt;h2&gt;{title}&lt;/h2&gt;
+      {children}
+    &lt;/section&gt;
+  );
+}
+
+&lt;Panel title="Settings"&gt;
+  &lt;ToggleSwitch /&gt;
+&lt;/Panel&gt;</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 08 — State & useState                                   -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">08</span><h2>State &amp; <code>useState</code></h2></div>
+  <p>State is <span class="a">mutable data</span> that belongs to a component. When state changes, React re-renders the component. The <code>useState</code> hook is the primary way to add local state to a function component.</p>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>Basic useState</h3>
+      <pre><code class="language-jsx">import { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+        Increment
+      &lt;/button&gt;
+      &lt;button onClick={() =&gt; setCount(0)}&gt;
+        Reset
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+    </div>
+    <div class="card green">
+      <h3>Functional Updates &amp; Objects</h3>
+      <pre><code class="language-jsx">// Functional update (prev state)
+setCount(prev =&gt; prev + 1);
+
+// Object state — spread to preserve fields
+const [form, setForm] = useState({
+  name: '', email: '', age: 0
+});
+
+function updateName(name) {
+  setForm(prev =&gt; ({ ...prev, name }));
+}
+
+// Array state — immutable patterns
+const [items, setItems] = useState([]);
+const addItem = (item) =&gt;
+  setItems(prev =&gt; [...prev, item]);
+const removeItem = (id) =&gt;
+  setItems(prev =&gt;
+    prev.filter(i =&gt; i.id !== id));</code></pre>
+    </div>
+  </div>
+  <div class="card purple" style="margin-top:.2em;">
+    <h3>Batching (React 18+)</h3>
+    <p>React 18 automatically batches <span class="a">all</span> state updates &mdash; including those in promises, timeouts, and event handlers &mdash; into a single re-render for better performance. In React 17, only synthetic event handlers were batched.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 09 — useEffect & Side Effects                           -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">09</span><h2><code>useEffect</code> &amp; Side Effects</h2></div>
+  <p><code>useEffect</code> lets you run <span class="a">side effects</span> in function components &mdash; data fetching, subscriptions, DOM mutations, and timers. It replaces <code>componentDidMount</code>, <code>componentDidUpdate</code>, and <code>componentWillUnmount</code>.</p>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>Dependency Array Patterns</h3>
+      <pre><code class="language-jsx">// Runs after EVERY render
+useEffect(() =&gt; { /* ... */ });
+
+// Runs ONCE on mount
+useEffect(() =&gt; {
+  fetchData();
+}, []);
+
+// Runs when `userId` changes
+useEffect(() =&gt; {
+  fetchUser(userId);
+}, [userId]);
+
+// Cleanup function (unmount / before re-run)
+useEffect(() =&gt; {
+  const ws = new WebSocket(url);
+  ws.onmessage = handleMessage;
+  return () =&gt; ws.close(); // cleanup
+}, [url]);</code></pre>
+    </div>
+    <div class="card green">
+      <h3>Data Fetching Example</h3>
+      <pre><code class="language-jsx">function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    let cancelled = false;
+    setLoading(true);
+
+    fetch(`/api/users/${userId}`)
+      .then(res =&gt; res.json())
+      .then(data =&gt; {
+        if (!cancelled) {
+          setUser(data);
+          setLoading(false);
+        }
+      });
+
+    return () =&gt; { cancelled = true; };
+  }, [userId]);
+
+  if (loading) return &lt;Spinner /&gt;;
+  return &lt;h1&gt;{user.name}&lt;/h1&gt;;
+}</code></pre>
+    </div>
+  </div>
+  <p style="margin-top:.15em;"><span class="r">Common mistake:</span> forgetting dependencies causes stale closures; adding object literals as deps causes infinite loops. Use the <code>eslint-plugin-react-hooks</code> exhaustive-deps rule.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 10 — Event Handling                                     -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">10</span><h2>Event Handling</h2></div>
+  <p>React wraps native DOM events in <span class="a">SyntheticEvent</span> objects for cross-browser consistency. Events are <span class="g">delegated</span> to the root container (React 17+) rather than individual DOM nodes.</p>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>Common Patterns</h3>
+      <pre><code class="language-jsx">function SearchBar() {
+  const [query, setQuery] = useState('');
+
+  const handleSubmit = (e) =&gt; {
+    e.preventDefault(); // prevent form reload
+    search(query);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input
+        value={query}
+        onChange={(e) =&gt; setQuery(e.target.value)}
+        placeholder="Search..."
+      /&gt;
+      &lt;button type="submit"&gt;Go&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+    </div>
+    <div class="card green">
+      <h3>Passing Arguments &amp; Memoisation</h3>
+      <pre><code class="language-jsx">// Passing data to handlers
+function TodoList({ todos, onDelete }) {
+  return (
+    &lt;ul&gt;
+      {todos.map(todo =&gt; (
+        &lt;li key={todo.id}&gt;
+          {todo.text}
+          &lt;button onClick={() =&gt; onDelete(todo.id)}&gt;
+            Delete
+          &lt;/button&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}
+
+// Memoised handler (avoid re-renders)
+const handleClick = useCallback(
+  (id) =&gt; dispatch({ type: 'DELETE', id }),
+  [dispatch]
+);</code></pre>
+    </div>
+  </div>
+  <table style="margin-top:.2em;">
+    <tr><th>Event</th><th>React Prop</th><th>When Fires</th></tr>
+    <tr><td>click</td><td><code>onClick</code></td><td>Element is clicked</td></tr>
+    <tr><td>change</td><td><code>onChange</code></td><td>Input value changes (fires on every keystroke in React)</td></tr>
+    <tr><td>submit</td><td><code>onSubmit</code></td><td>Form is submitted</td></tr>
+    <tr><td>keydown</td><td><code>onKeyDown</code></td><td>A key is pressed</td></tr>
+    <tr><td>focus / blur</td><td><code>onFocus</code> / <code>onBlur</code></td><td>Element gains / loses focus</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 11 — Conditional Rendering & Lists                      -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">11</span><h2>Conditional Rendering &amp; Lists</h2></div>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>Conditional Patterns</h3>
+      <pre><code class="language-jsx">// Ternary operator
+{isLoggedIn ? &lt;Dashboard /&gt; : &lt;Login /&gt;}
+
+// Logical AND (short-circuit)
+{hasError &amp;&amp; &lt;ErrorBanner msg={error} /&gt;}
+
+// Early return
+function Page({ user }) {
+  if (!user) return &lt;Redirect to="/login" /&gt;;
+  return &lt;Profile user={user} /&gt;;
+}
+
+// Switch-like with object map
+const STATUS_ICONS = {
+  success: &lt;CheckIcon /&gt;,
+  error:   &lt;AlertIcon /&gt;,
+  loading: &lt;Spinner /&gt;,
+};
+return STATUS_ICONS[status] ?? null;</code></pre>
+    </div>
+    <div class="card green">
+      <h3>Rendering Lists</h3>
+      <pre><code class="language-jsx">function ProductList({ products }) {
+  if (products.length === 0) {
+    return &lt;p&gt;No products found.&lt;/p&gt;;
+  }
+
+  return (
+    &lt;ul&gt;
+      {products.map(product =&gt; (
+        &lt;li key={product.id}&gt;
+          &lt;h3&gt;{product.name}&lt;/h3&gt;
+          &lt;span&gt;${product.price}&lt;/span&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}</code></pre>
+    </div>
+  </div>
+  <div class="card red" style="margin-top:.2em;">
+    <h3>Why Keys Matter</h3>
+    <p>Keys help React <span class="a">identify which items changed</span>. Use a <span class="b">stable, unique id</span> &mdash; never use array index as key when items can be reordered, added, or removed. Bad keys cause subtle bugs: wrong inputs retain values, animations break, and components lose state.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 12 — Forms & Controlled Components                      -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">12</span><h2>Forms &amp; Controlled Components</h2></div>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>Controlled Component</h3>
+      <pre><code class="language-jsx">function SignupForm() {
+  const [form, setForm] = useState({
+    email: '', password: '', agree: false
+  });
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) =&gt; {
+    const { name, value, type, checked } = e.target;
+    setForm(prev =&gt; ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
+  const handleSubmit = (e) =&gt; {
+    e.preventDefault();
+    const errs = validate(form);
+    if (Object.keys(errs).length) {
+      setErrors(errs);
+    } else {
+      submitForm(form);
+    }
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input name="email" value={form.email}
+        onChange={handleChange} /&gt;
+      {errors.email &amp;&amp; &lt;span&gt;{errors.email}&lt;/span&gt;}
+      &lt;input name="password" type="password"
+        value={form.password}
+        onChange={handleChange} /&gt;
+      &lt;label&gt;
+        &lt;input name="agree" type="checkbox"
+          checked={form.agree}
+          onChange={handleChange} /&gt;
+        I agree to terms
+      &lt;/label&gt;
+      &lt;button type="submit"&gt;Sign Up&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+    </div>
+    <div>
+      <div class="card green">
+        <h3>Uncontrolled (useRef)</h3>
+        <pre><code class="language-jsx">function QuickSearch() {
+  const inputRef = useRef(null);
+
+  const handleSubmit = (e) =&gt; {
+    e.preventDefault();
+    search(inputRef.current.value);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input ref={inputRef}
+        defaultValue="" /&gt;
+      &lt;button type="submit"&gt;Go&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+      </div>
+      <div class="card purple" style="margin-top:.3em;">
+        <h3>Controlled vs Uncontrolled</h3>
+        <table>
+          <tr><th>Aspect</th><th>Controlled</th><th>Uncontrolled</th></tr>
+          <tr><td>Source of truth</td><td>React state</td><td>DOM</td></tr>
+          <tr><td>Validation</td><td>On every change</td><td>On submit</td></tr>
+          <tr><td>Dynamic input</td><td>Easy</td><td>Harder</td></tr>
+          <tr><td>Performance</td><td>More re-renders</td><td>Fewer re-renders</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 13 — Context API & useContext                            -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">13</span><h2>Context API &amp; <code>useContext</code></h2></div>
+  <p>Context provides a way to pass data through the component tree <span class="a">without prop drilling</span>. Ideal for global concerns: theme, auth, locale, feature flags.</p>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>Creating &amp; Providing</h3>
+      <pre><code class="language-jsx">import { createContext, useState, useContext }
+  from 'react';
+
+const ThemeContext = createContext('light');
+
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+
+  const toggle = () =&gt;
+    setTheme(t =&gt; t === 'light' ? 'dark' : 'light');
+
+  return (
+    &lt;ThemeContext.Provider value={{ theme, toggle }}&gt;
+      {children}
+    &lt;/ThemeContext.Provider&gt;
+  );
+}
+
+// Wrap your app
+&lt;ThemeProvider&gt;
+  &lt;App /&gt;
+&lt;/ThemeProvider&gt;</code></pre>
+    </div>
+    <div class="card green">
+      <h3>Consuming Context</h3>
+      <pre><code class="language-jsx">function ThemeToggle() {
+  const { theme, toggle } = useContext(ThemeContext);
+
+  return (
+    &lt;button onClick={toggle}&gt;
+      Current: {theme}
+    &lt;/button&gt;
+  );
+}
+
+function Page() {
+  const { theme } = useContext(ThemeContext);
+
+  return (
+    &lt;div className={`page ${theme}`}&gt;
+      &lt;h1&gt;Welcome&lt;/h1&gt;
+      &lt;ThemeToggle /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+    </div>
+  </div>
+  <div class="card red" style="margin-top:.2em;">
+    <h3>Caveat: Re-renders</h3>
+    <p><span class="r">Every consumer re-renders</span> when the context value changes. Split contexts by update frequency (e.g., separate ThemeContext from UserContext). Use <code>useMemo</code> on the value object to avoid unnecessary reference changes.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 14 — useReducer & Complex State                         -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">14</span><h2><code>useReducer</code> &amp; Complex State</h2></div>
+  <p><code>useReducer</code> is an alternative to <code>useState</code> for <span class="a">complex state logic</span>. Inspired by Redux, it centralises state transitions in a pure <span class="g">reducer function</span>.</p>
+  <div class="cols cols-6040">
+    <div class="card amber">
+      <h3>Todo App with useReducer</h3>
+      <pre><code class="language-jsx">const initialState = { todos: [], nextId: 1 };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'ADD':
+      return {
+        ...state,
+        todos: [...state.todos, {
+          id: state.nextId, text: action.text, done: false
+        }],
+        nextId: state.nextId + 1,
+      };
+    case 'TOGGLE':
+      return {
+        ...state,
+        todos: state.todos.map(t =&gt;
+          t.id === action.id
+            ? { ...t, done: !t.done } : t
+        ),
+      };
+    case 'DELETE':
+      return {
+        ...state,
+        todos: state.todos.filter(t =&gt; t.id !== action.id),
+      };
+    default:
+      throw new Error(`Unknown action: ${action.type}`);
+  }
+}</code></pre>
+    </div>
+    <div>
+      <div class="card green">
+        <h3>Using the Reducer</h3>
+        <pre><code class="language-jsx">function TodoApp() {
+  const [state, dispatch] = useReducer(
+    reducer, initialState
+  );
+
+  return (
+    &lt;div&gt;
+      &lt;AddTodoForm onAdd={(text) =&gt;
+        dispatch({ type: 'ADD', text })}
+      /&gt;
+      {state.todos.map(todo =&gt; (
+        &lt;TodoItem
+          key={todo.id}
+          todo={todo}
+          onToggle={() =&gt; dispatch({
+            type: 'TOGGLE', id: todo.id
+          })}
+          onDelete={() =&gt; dispatch({
+            type: 'DELETE', id: todo.id
+          })}
+        /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</code></pre>
+      </div>
+      <div class="card purple" style="margin-top:.3em;">
+        <h3>useState vs useReducer</h3>
+        <ul>
+          <li><span class="a">useState</span> &mdash; simple values, few transitions</li>
+          <li><span class="g">useReducer</span> &mdash; complex objects, many action types, testable transitions</li>
+          <li>Combine with <span class="b">Context</span> to replace Redux for mid-size apps</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 15 — Custom Hooks                                       -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">15</span><h2>Custom Hooks</h2></div>
+  <p>Custom hooks let you <span class="a">extract and reuse stateful logic</span> across components. A custom hook is simply a function whose name starts with <code>use</code> and that calls other hooks.</p>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>useLocalStorage</h3>
+      <pre><code class="language-jsx">function useLocalStorage(key, initialValue) {
+  const [value, setValue] = useState(() =&gt; {
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch {
+      return initialValue;
+    }
+  });
+
+  useEffect(() =&gt; {
+    localStorage.setItem(key, JSON.stringify(value));
+  }, [key, value]);
+
+  return [value, setValue];
+}
+
+// Usage
+const [theme, setTheme] =
+  useLocalStorage('theme', 'dark');</code></pre>
+    </div>
+    <div class="card green">
+      <h3>useFetch</h3>
+      <pre><code class="language-jsx">function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() =&gt; {
+    let cancelled = false;
+    setLoading(true);
+    fetch(url)
+      .then(r =&gt; r.json())
+      .then(d =&gt; {
+        if (!cancelled) { setData(d); setLoading(false); }
+      })
+      .catch(e =&gt; {
+        if (!cancelled) { setError(e); setLoading(false); }
+      });
+    return () =&gt; { cancelled = true; };
+  }, [url]);
+
+  return { data, loading, error };
+}
+
+// Usage
+const { data, loading } = useFetch('/api/posts');</code></pre>
+    </div>
+  </div>
+  <div class="card red" style="margin-top:.2em;">
+    <h3>Rules of Hooks</h3>
+    <ul>
+      <li><span class="r">Only call hooks at the top level</span> &mdash; never inside loops, conditions, or nested functions</li>
+      <li><span class="r">Only call hooks from React functions</span> &mdash; function components or custom hooks</li>
+      <li>Use the <code>eslint-plugin-react-hooks</code> plugin to enforce these rules automatically</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 16 — React Router                                       -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">16</span><h2>React Router</h2></div>
+  <p><span class="a">React Router v6</span> is the standard routing library for React SPAs. It enables client-side navigation without full-page reloads, with nested layouts, dynamic segments, and data loading.</p>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>Basic Setup</h3>
+      <pre><code class="language-jsx">import { BrowserRouter, Routes, Route, Link }
+  from 'react-router-dom';
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;nav&gt;
+        &lt;Link to="/"&gt;Home&lt;/Link&gt;
+        &lt;Link to="/about"&gt;About&lt;/Link&gt;
+        &lt;Link to="/users"&gt;Users&lt;/Link&gt;
+      &lt;/nav&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+        &lt;Route path="/users" element={&lt;Users /&gt;}&gt;
+          &lt;Route path=":userId"
+            element={&lt;UserDetail /&gt;} /&gt;
+        &lt;/Route&gt;
+        &lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}</code></pre>
+    </div>
+    <div class="card green">
+      <h3>Params, Loaders &amp; Navigation</h3>
+      <pre><code class="language-jsx">import { useParams, useNavigate }
+  from 'react-router-dom';
+
+function UserDetail() {
+  const { userId } = useParams();
+  const navigate = useNavigate();
+  const { data: user } = useFetch(
+    `/api/users/${userId}`
+  );
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; navigate(-1)}&gt;
+        Back
+      &lt;/button&gt;
+      &lt;h1&gt;{user?.name}&lt;/h1&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Route loader (React Router 6.4+)
+const userLoader = async ({ params }) =&gt; {
+  const res = await fetch(
+    `/api/users/${params.userId}`
+  );
+  if (!res.ok) throw new Response('', { status: 404 });
+  return res.json();
+};</code></pre>
+    </div>
+  </div>
+  <p style="margin-top:.15em;"><span class="p">Nested routes</span> render inside an <code>&lt;Outlet /&gt;</code> component in the parent, enabling persistent layouts (e.g., sidebar + content).</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 17 — Performance Optimisation                           -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">17</span><h2>Performance Optimisation</h2></div>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>React.memo</h3>
+      <pre><code class="language-jsx">// Skip re-render if props unchanged
+const UserCard = React.memo(({ name, avatar }) =&gt; {
+  return (
+    &lt;div className="card"&gt;
+      &lt;img src={avatar} alt={name} /&gt;
+      &lt;h3&gt;{name}&lt;/h3&gt;
+    &lt;/div&gt;
+  );
+});
+
+// Custom comparator
+const Chart = React.memo(ChartInner, (prev, next) =&gt;
+  prev.data.length === next.data.length &amp;&amp;
+  prev.data.every((v, i) =&gt; v === next.data[i])
+);</code></pre>
+    </div>
+    <div class="card green">
+      <h3>useMemo &amp; useCallback</h3>
+      <pre><code class="language-jsx">// Memoise expensive computation
+const sorted = useMemo(
+  () =&gt; items.slice().sort((a, b) =&gt;
+    a.price - b.price),
+  [items]
+);
+
+// Memoise callback identity
+const handleDelete = useCallback(
+  (id) =&gt; dispatch({ type: 'DELETE', id }),
+  [dispatch]
+);</code></pre>
+    </div>
+  </div>
+  <div class="cols cols-2" style="margin-top:.3em;">
+    <div class="card purple">
+      <h3>Code Splitting (lazy + Suspense)</h3>
+      <pre><code class="language-jsx">import { lazy, Suspense } from 'react';
+
+const Dashboard = lazy(
+  () =&gt; import('./Dashboard')
+);
+
+function App() {
+  return (
+    &lt;Suspense fallback={&lt;Spinner /&gt;}&gt;
+      &lt;Dashboard /&gt;
+    &lt;/Suspense&gt;
+  );
+}</code></pre>
+    </div>
+    <div class="card blue">
+      <h3>Quick Wins Checklist</h3>
+      <ul>
+        <li>Use <span class="a">React DevTools Profiler</span> to find slow components</li>
+        <li>Add <span class="g">stable keys</span> to list items</li>
+        <li>Avoid <span class="r">inline object / array literals</span> as props</li>
+        <li>Split context by <span class="p">update frequency</span></li>
+        <li>Use <span class="b">lazy()</span> for route-level code splitting</li>
+        <li>Virtualise long lists with <code>react-window</code></li>
+        <li>Use <code>useTransition</code> for non-urgent updates (React 18)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 18 — Testing React Components                           -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">18</span><h2>Testing React Components</h2></div>
+  <p>The <span class="a">React Testing Library</span> (RTL) encourages testing components the way users interact with them &mdash; by visible text, roles, and labels rather than implementation details.</p>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>Unit Test with RTL + Jest</h3>
+      <pre><code class="language-jsx">import { render, screen, fireEvent }
+  from '@testing-library/react';
+import Counter from './Counter';
+
+test('increments counter on click', () =&gt; {
+  render(&lt;Counter /&gt;);
+
+  const button = screen.getByRole('button',
+    { name: /increment/i });
+  const display = screen.getByText(/count: 0/i);
+
+  fireEvent.click(button);
+
+  expect(screen.getByText(/count: 1/i))
+    .toBeInTheDocument();
+});
+
+test('resets to zero', () =&gt; {
+  render(&lt;Counter /&gt;);
+  fireEvent.click(screen.getByText(/increment/i));
+  fireEvent.click(screen.getByText(/reset/i));
+  expect(screen.getByText(/count: 0/i))
+    .toBeInTheDocument();
+});</code></pre>
+    </div>
+    <div class="card green">
+      <h3>Async &amp; Mocking</h3>
+      <pre><code class="language-jsx">import { render, screen, waitFor }
+  from '@testing-library/react';
+import UserProfile from './UserProfile';
+
+// Mock fetch
+global.fetch = jest.fn(() =&gt;
+  Promise.resolve({
+    json: () =&gt; Promise.resolve({
+      name: 'Alice', role: 'Engineer' }),
+  })
+);
+
+test('loads and displays user', async () =&gt; {
+  render(&lt;UserProfile userId={42} /&gt;);
+
+  expect(screen.getByText(/loading/i))
+    .toBeInTheDocument();
+
+  await waitFor(() =&gt; {
+    expect(screen.getByText('Alice'))
+      .toBeInTheDocument();
+  });
+});</code></pre>
+    </div>
+  </div>
+  <div class="card purple" style="margin-top:.2em;">
+    <h3>Best Practices</h3>
+    <ul>
+      <li>Query by <span class="a">role</span>, <span class="g">label</span>, or <span class="b">text</span> &mdash; avoid test IDs unless necessary</li>
+      <li>Use <code>userEvent</code> over <code>fireEvent</code> for realistic interaction simulation</li>
+      <li>Test <span class="p">behaviour, not implementation</span> &mdash; do not assert on state or internal methods</li>
+      <li>Use <span class="r">MSW</span> (Mock Service Worker) for network mocking in integration tests</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 19 — The React Ecosystem                                -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">19</span><h2>The React Ecosystem</h2></div>
+  <div class="cols cols-3">
+    <div class="card amber">
+      <h3>Frameworks</h3>
+      <ul>
+        <li><span class="a">Next.js</span> &mdash; SSR, SSG, API routes, App Router</li>
+        <li><span class="a">Remix</span> &mdash; full-stack with nested routes &amp; loaders</li>
+        <li><span class="a">Gatsby</span> &mdash; static site generation with GraphQL</li>
+        <li><span class="a">Astro</span> &mdash; islands architecture, multi-framework</li>
+      </ul>
+    </div>
+    <div class="card green">
+      <h3>State Management</h3>
+      <ul>
+        <li><span class="g">Redux Toolkit</span> &mdash; predictable, middleware-friendly</li>
+        <li><span class="g">Zustand</span> &mdash; lightweight, minimal boilerplate</li>
+        <li><span class="g">Jotai / Recoil</span> &mdash; atomic state model</li>
+        <li><span class="g">TanStack Query</span> &mdash; server state &amp; caching</li>
+      </ul>
+    </div>
+    <div class="card purple">
+      <h3>UI Libraries</h3>
+      <ul>
+        <li><span class="p">Material UI (MUI)</span> &mdash; Google Material Design</li>
+        <li><span class="p">Chakra UI</span> &mdash; accessible, composable</li>
+        <li><span class="p">shadcn/ui</span> &mdash; copy-paste Radix + Tailwind</li>
+        <li><span class="p">Ant Design</span> &mdash; enterprise-grade components</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cols cols-2" style="margin-top:.3em;">
+    <div class="card blue">
+      <h3>Data Fetching &amp; Forms</h3>
+      <ul>
+        <li><span class="b">TanStack Query</span> &mdash; caching, background refetch, pagination</li>
+        <li><span class="b">SWR</span> &mdash; stale-while-revalidate by Vercel</li>
+        <li><span class="b">React Hook Form</span> &mdash; performant forms with minimal re-renders</li>
+        <li><span class="b">Zod</span> &mdash; TypeScript-first schema validation</li>
+      </ul>
+    </div>
+    <div class="card red">
+      <h3>Build Tools &amp; Utilities</h3>
+      <ul>
+        <li><span class="r">Vite</span> &mdash; fast dev server &amp; bundler (replaces CRA)</li>
+        <li><span class="r">TypeScript</span> &mdash; static typing for React props &amp; state</li>
+        <li><span class="r">Storybook</span> &mdash; component development in isolation</li>
+        <li><span class="r">Playwright / Cypress</span> &mdash; end-to-end testing</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 20 — Summary & Next Steps                               -->
+<!-- ============================================================ -->
+<section>
+  <div class="slide-hdr"><span class="tag">20</span><h2>Summary &amp; Next Steps</h2></div>
+  <div class="cols cols-2">
+    <div class="card amber">
+      <h3>What We Covered</h3>
+      <ul>
+        <li>React's <span class="a">component model</span> and virtual DOM</li>
+        <li><span class="g">JSX</span> syntax and expressions</li>
+        <li><span class="b">Props</span>, one-way data flow, children</li>
+        <li><span class="p">Hooks</span>: useState, useEffect, useReducer, useContext</li>
+        <li>Event handling, forms, conditional rendering</li>
+        <li>Custom hooks for reusable logic</li>
+        <li>Routing, performance, testing, ecosystem</li>
+      </ul>
+    </div>
+    <div class="card green">
+      <h3>Recommended Next Steps</h3>
+      <ul>
+        <li>Build a project: Todo app, blog, e-commerce dashboard</li>
+        <li>Add <span class="a">TypeScript</span> to your React projects</li>
+        <li>Learn a meta-framework: <span class="b">Next.js</span> or <span class="b">Remix</span></li>
+        <li>Master <span class="g">TanStack Query</span> for data fetching</li>
+        <li>Study React Server Components &amp; the App Router</li>
+        <li>Write tests from day one with <span class="p">RTL</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="card blue" style="margin-top:.3em;">
+    <h3>Essential Resources</h3>
+    <ul>
+      <li><span class="a">react.dev</span> &mdash; Official documentation (completely rewritten in 2023)</li>
+      <li><span class="g">React DevTools</span> &mdash; Browser extension for debugging components &amp; performance</li>
+      <li><span class="b">Epic React</span> by Kent C. Dodds &mdash; Comprehensive workshop series</li>
+      <li><span class="p">TanStack</span> &mdash; Query, Router, Table, and more by Tanner Linsley</li>
+    </ul>
+  </div>
+  <p style="text-align:center; margin-top:.5em; color:var(--muted); font-size:.5em;">
+    <span class="a">Thank you!</span> &mdash; Built with Reveal.js &middot; Single self-contained HTML file
+  </p>
+</section>
+
+</div><!-- /slides -->
+</div><!-- /reveal -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+<script>
+Reveal.initialize({
+  hash: true,
+  transition: 'fade',
+  transitionSpeed: 'fast',
+  controls: true,
+  progress: true,
+  center: false,
+  width: 1100,
+  height: 900,
+  margin: 0.01,
+  plugins: [RevealHighlight],
+  highlight: { theme: 'monokai' }
+});
+</script>
+<script>
+(function(){
+  var h = Reveal.getConfig().height || 900;
+  var m = Reveal.getConfig().margin || 0.02;
+  var maxH = Math.floor(h * (1 - 2 * m)) + 'px';
+  function fixSlides(){
+    document.querySelectorAll('.reveal .slides>section,.reveal .slides>section>section').forEach(function(s){
+      s.style.display = 'block';
+      s.style.maxHeight = maxH;
+    });
+  }
+  Reveal.on('ready', fixSlides);
+  Reveal.on('slidechanged', fixSlides);
+})();
+</script>
+</body>
+</html>
